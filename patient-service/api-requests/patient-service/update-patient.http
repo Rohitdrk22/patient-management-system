@@ -1,0 +1,10 @@
+### Put Request to update patients details.
+PUT http://localhost:4000/patients/10f73b65-6ecf-4dc0-8041-c53efeb4314d
+Content-Type: application/json
+
+{
+  "name": "Chimapnzee",
+  "email": "Azad@gandu.com",
+  "address": "Gandu Nagar",
+  "dateOfBirth": "1947-08-15"
+}
