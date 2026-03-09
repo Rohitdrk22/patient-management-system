@@ -1,4 +1,4 @@
-package com.pm.patientservice.dto;
+package com.pm.billingservice.patientservice.dto;
 
 public class PatientResponseDTO {
     private String id;

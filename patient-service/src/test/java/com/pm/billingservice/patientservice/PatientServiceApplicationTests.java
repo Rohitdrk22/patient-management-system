@@ -1,4 +1,4 @@
-package com.pm.patientservice;
+package com.pm.billingservice.patientservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.pm.patientservice.exception;
+package com.pm.billingservice.patientservice.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

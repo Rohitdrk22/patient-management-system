@@ -1,4 +1,4 @@
-package com.pm.patientservice.exception;
+package com.pm.billingservice.patientservice.exception;
 
 import java.util.UUID;
 

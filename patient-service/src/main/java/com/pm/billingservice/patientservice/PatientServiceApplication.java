@@ -1,4 +1,4 @@
-package com.pm.patientservice;
+package com.pm.billingservice.patientservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
