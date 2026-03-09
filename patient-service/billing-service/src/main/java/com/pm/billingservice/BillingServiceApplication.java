@@ -9,7 +9,7 @@ public class BillingServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(BillingServiceApplication.class, args);
 
-        System.out.println("Hello from the Billing Service Module");
+        System.out.println("Billing Service is Running");
     }
 
 }
