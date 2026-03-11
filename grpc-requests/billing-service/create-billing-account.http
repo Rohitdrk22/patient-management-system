@@ -1,0 +1,9 @@
+@proto=./billing-service/src/main/proto/billing_service.proto
+
+GRPC localhost:9001/billing.BillingService/CreateBillingAccount
+
+{
+  "patientId": "12333",
+  "name": "John Doe",
+  "email": "john.doe@example.com"
+}
