@@ -1,0 +1,11 @@
+### Put Request to update patients details.
+PUT http://localhost:4000/patients/716e2bdf-cf2e-42f4-91a6-3036acfb78c6
+Content-Type: application/json
+
+{
+  "name": "Benam Insan",
+  "email": "Benam@insan.com",
+  "address": "Lapata Nagar",
+  "dateOfBirth": "1900-12-31",
+  "registeredDate": "2026-10-03"
+}
