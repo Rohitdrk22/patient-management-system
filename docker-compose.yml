@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: pms-postgres
+    environment:
+      POSTGRES_USER: rohit
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: pms
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  patient-service:
+    build: ./patient-service
+    container_name: patient-service
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
+      SPRING_DATASOURCE_USERNAME: rohit
+      SPRING_DATASOURCE_PASSWORD: 1234
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  billing-service:
+    build: ./billing-service
+    container_name: billing-service
+    ports:
+      - "4001:4001"
+      - "9001:9001"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
+      SPRING_DATASOURCE_USERNAME: rohit
+      SPRING_DATASOURCE_PASSWORD: 1234
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data:

@@ -79,6 +79,7 @@
 
 
 	<build>
+		<finalName>billing-service</finalName>
 		<extensions>
 			<!-- Ensure OS compatibility for protoc -->
 			<extension>
