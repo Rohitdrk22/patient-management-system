@@ -1,4 +1,4 @@
-version: "3.9"
+#version: "3.9"
 
 services:
 
@@ -20,12 +20,15 @@ services:
         max-file: "3"
 
   patient-service:
-    build: ./patient-service
+    build:
+      context: .
+      dockerfile: "Docker Files/Dockerfile (patient-service)"
     container_name: patient-service
     ports:
       - "4000:4000"
     depends_on:
       - postgres
+      - kafka
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
       SPRING_DATASOURCE_USERNAME: rohit
@@ -39,13 +42,16 @@ services:
         max-file: "3"
 
   billing-service:
-    build: ./billing-service
+    build:
+      context: .
+      dockerfile: "Docker Files/Dockerfile (billing-service)"
     container_name: billing-service
     ports:
       - "4001:4001"
       - "9001:9001"
     depends_on:
       - postgres
+      - kafka
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
       SPRING_DATASOURCE_USERNAME: rohit
@@ -55,6 +61,35 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  kafka:
+    build:
+      context: .
+      dockerfile: "Docker Files/Dockerfile (kafka)"
+    container_name: pms-kafka
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: pms-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+
 
 volumes:
   postgres_data:
