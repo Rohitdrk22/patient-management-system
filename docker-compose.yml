@@ -35,6 +35,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: 1234
       BILLING_SERVICE_ADDRESS: billing-service
       BILLING_SERVICE_GRPC_PORT: 9001
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+
     logging:
       driver: "json-file"
       options:
@@ -53,6 +56,7 @@ services:
       - postgres
       - kafka
     environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
       SPRING_DATASOURCE_USERNAME: rohit
       SPRING_DATASOURCE_PASSWORD: 1234
@@ -66,10 +70,10 @@ services:
     build:
       context: .
       dockerfile: "Docker Files/Dockerfile (kafka)"
-    container_name: pms-kafka
+    container_name: kafka
     ports:
       - "9092:9092"
-      - "9094:9094"
+#      - "9094:9094"
     environment:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
