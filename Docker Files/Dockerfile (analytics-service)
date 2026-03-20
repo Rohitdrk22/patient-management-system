@@ -1,0 +1,8 @@
+FROM openjdk:27-ea-jdk
+
+COPY ../analytics-service/target/analytics-service.jar analytics-service.jar
+
+EXPOSE 4002
+
+ENTRYPOINT ["java", "-jar", "/analytics-service.jar"]
+

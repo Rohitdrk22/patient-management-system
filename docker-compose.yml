@@ -57,6 +57,8 @@ services:
       - kafka
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_KAFKA_CONSUMER_GROUP_ID: billing-group
+      SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: earliest
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
       SPRING_DATASOURCE_USERNAME: rohit
       SPRING_DATASOURCE_PASSWORD: 1234
@@ -65,6 +67,28 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  analytics-service:
+    build:
+      context: .
+      dockerfile: "Docker Files/Dockerfile (analytics-service)"
+    container_name: analytics-service
+    ports:
+      - "4002:4002"
+    depends_on:
+      - postgres
+      - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
+      SPRING_DATASOURCE_USERNAME: rohit
+      SPRING_DATASOURCE_PASSWORD: 1234
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
 
   kafka:
     build:

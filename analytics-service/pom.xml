@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.3</version>
+		<version>4.0.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.pm</groupId>
-	<artifactId>billing-service</artifactId>
+	<artifactId>analytics-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>billing-service</name>
-	<description>Demo project for Spring Boot</description>
+	<name/>
+	<description/>
 	<url/>
 	<licenses>
 		<license/>
@@ -32,41 +32,28 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-kafka-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
-		<!--GRPC -->
 		<dependency>
-			<groupId>io.grpc</groupId>
-			<artifactId>grpc-netty-shaded</artifactId>
-			<version>1.69.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.grpc</groupId>
-			<artifactId>grpc-protobuf</artifactId>
-			<version>1.69.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.grpc</groupId>
-			<artifactId>grpc-stub</artifactId>
-			<version>1.69.0</version>
-		</dependency>
-		<dependency> <!-- necessary for Java 9+ -->
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>annotations-api</artifactId>
-			<version>6.0.53</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.devh</groupId>
-			<artifactId>grpc-spring-boot-starter</artifactId>
-			<version>3.1.0.RELEASE</version>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>3.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
@@ -74,16 +61,10 @@
 			<version>4.29.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-
 	</dependencies>
 
-
 	<build>
-		<finalName>billing-service</finalName>
+		<finalName>analytics-service</finalName>
 		<extensions>
 			<!-- Ensure OS compatibility for protoc -->
 			<extension>
@@ -93,13 +74,11 @@
 			</extension>
 		</extensions>
 		<plugins>
-			<!-- Spring boot / maven  -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
-			<!-- PROTO -->
 			<plugin>
 				<groupId>org.xolstice.maven.plugins</groupId>
 				<artifactId>protobuf-maven-plugin</artifactId>
@@ -120,6 +99,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>
