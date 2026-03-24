@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin(origins = "http://localhost:5173") // Vite port
 @RestController
 @RequestMapping("/patients")
 @Tag(name = "Patient", description = "API for managing Patients")
