@@ -2,11 +2,11 @@ services:
 
   postgres:
     image: postgres:15
-    container_name: pms-postgres
+    container_name: pms-patient-db-postgres
     environment:
       POSTGRES_USER: rohit
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: pms
+      POSTGRES_DB: pms-patient-db
     ports:
       - "5432:5432"
     volumes:
@@ -22,6 +22,8 @@ services:
       context: .
       dockerfile: "Docker Files/Dockerfile (patient-service)"
     container_name: patient-service
+    ports:
+      - "4000:4000"
     depends_on:
       - postgres
       - kafka
@@ -53,7 +55,7 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_KAFKA_CONSUMER_GROUP_ID: billing-group
       SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: earliest
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms-patient-db
       SPRING_DATASOURCE_USERNAME: rohit
       SPRING_DATASOURCE_PASSWORD: 1234
     logging:
@@ -74,7 +76,7 @@ services:
       - kafka
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms-patient-db
       SPRING_DATASOURCE_USERNAME: rohit
       SPRING_DATASOURCE_PASSWORD: 1234
     logging:
@@ -119,16 +121,16 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka-ui
-    ports:
-      - "8080:8080"
-    depends_on:
-      - kafka
-    environment:
-      KAFKA_CLUSTERS_0_NAME: pms-cluster
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+#  kafka-ui:
+#    image: provectuslabs/kafka-ui:latest
+#    container_name: kafka-ui
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - kafka
+#    environment:
+#      KAFKA_CLUSTERS_0_NAME: pms-patient-db-cluster
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
 
 volumes:
   postgres_data:
