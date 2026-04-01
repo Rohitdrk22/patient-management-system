@@ -26,7 +26,7 @@ services:
       - postgres
       - kafka
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms-patient-db
       SPRING_DATASOURCE_USERNAME: rohit
       SPRING_DATASOURCE_PASSWORD: 1234
       BILLING_SERVICE_ADDRESS: billing-service
