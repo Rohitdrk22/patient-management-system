@@ -1,0 +1,12 @@
+server:
+  port: 4004
+
+spring:
+  application:
+    name: api-gateway
+  profiles:
+    active: local   # default profile, override with SPRING_PROFILES_ACTIVE=docker
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE

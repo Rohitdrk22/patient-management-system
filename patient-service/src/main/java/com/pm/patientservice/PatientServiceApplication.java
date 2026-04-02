@@ -18,11 +18,11 @@ public class PatientServiceApplication {
 			System.out.println();
 			System.out.println("----------------------------------------------------");
 			System.out.println("PMS MICROSERVICES RUNNING");
-			System.out.println("Patient Service : http://localhost:4000");
+			System.out.println("Patient Service : http://localhost:4000/patients");
 			System.out.println("Billing Service : http://localhost:4001");
-			System.out.println("GRPC Server     : localhost:9001");
-			System.out.println("Kafka Server     : localhost:9092");
-			System.out.println("Kafka Server     : localhost:9094");
+			System.out.println("GRPC Server     : http://localhost:9001");
+			System.out.println("Kafka Server    : http://localhost:9092");
+			System.out.println("Kafka Server    : http://localhost:9094");
 			System.out.println("----------------------------------------------------");
 			System.out.println();
 		};
