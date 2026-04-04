@@ -125,16 +125,16 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka-ui
-    ports:
-      - "8080:8080"
-    depends_on:
-      - kafka
-    environment:
-      KAFKA_CLUSTERS_0_NAME: pms-patient-db-cluster
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+#  kafka-ui:
+#    image: provectuslabs/kafka-ui:latest
+#    container_name: kafka-ui
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - kafka
+#    environment:
+#      KAFKA_CLUSTERS_0_NAME: pms-patient-db-cluster
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
 
 volumes:
   postgres_data:

@@ -1,0 +1,8 @@
+FROM openjdk:27-ea-jdk
+
+COPY ../auth-service/target/auth-service.jar auth-service.jar
+
+EXPOSE 4005
+
+ENTRYPOINT ["java", "-jar", "/auth-service.jar"]
+
