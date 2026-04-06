@@ -1,0 +1,9 @@
+# Ignore Kafka binaries
+kafka/
+
+# Ignore Kafka logs (extra safety)
+**/kafka-logs/
+
+# Ignore temp files
+*.log
+*.tmp
