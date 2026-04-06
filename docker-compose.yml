@@ -88,78 +88,78 @@ services:
         max-size: "10m"
         max-file: "3"
 
-#  billing-service:
-#    build:
-#      context: .
-#      dockerfile: "Docker Files/Dockerfile (billing-service)"
-#    container_name: billing-service
-#    ports:
-#      - "4001:4001"
-#      - "9001:9001"
-#    depends_on:
-#      - postgres
-#      - kafka
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-#      SPRING_KAFKA_CONSUMER_GROUP_ID: billing-group
-#      SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: earliest
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms-patient-db
-#      SPRING_DATASOURCE_USERNAME: rohit
-#      SPRING_DATASOURCE_PASSWORD: 1234
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "10m"
-#        max-file: "3"
-#
-#  analytics-service:
-#    build:
-#      context: .
-#      dockerfile: "Docker Files/Dockerfile (analytics-service)"
-#    container_name: analytics-service
-#    ports:
-#      - "4002:4002"
-#    depends_on:
-#      - postgres
-#      - kafka
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms-patient-db
-#      SPRING_DATASOURCE_USERNAME: rohit
-#      SPRING_DATASOURCE_PASSWORD: 1234
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "10m"
-#        max-file: "3"
-#
-#  kafka:
-#    build:
-#      context: .
-#      dockerfile: "Docker Files/Dockerfile (kafka)"
-#    container_name: kafka
-#    ports:
-#      - "9092:9092"
-#    environment:
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "10m"
-#        max-file: "3"
-#
-#  kafka-ui:
-#    image: provectuslabs/kafka-ui:latest
-#    container_name: kafka-ui
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - kafka
-#    environment:
-#      KAFKA_CLUSTERS_0_NAME: pms-patient-db-cluster
-#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+  billing-service:
+    build:
+      context: .
+      dockerfile: "Docker Files/Dockerfile (billing-service)"
+    container_name: billing-service
+    ports:
+      - "4001:4001"
+      - "9001:9001"
+    depends_on:
+      - postgres
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_KAFKA_CONSUMER_GROUP_ID: billing-group
+      SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: earliest
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms-patient-db
+      SPRING_DATASOURCE_USERNAME: rohit
+      SPRING_DATASOURCE_PASSWORD: 1234
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  analytics-service:
+    build:
+      context: .
+      dockerfile: "Docker Files/Dockerfile (analytics-service)"
+    container_name: analytics-service
+    ports:
+      - "4002:4002"
+    depends_on:
+      - postgres
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pms-patient-db
+      SPRING_DATASOURCE_USERNAME: rohit
+      SPRING_DATASOURCE_PASSWORD: 1234
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  kafka:
+    build:
+      context: .
+      dockerfile: "Docker Files/Dockerfile (kafka)"
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: pms-patient-db-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka:9092
 
 volumes:
   postgres_data:
