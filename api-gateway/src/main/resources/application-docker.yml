@@ -1,40 +1,32 @@
-server:
-  port: 4004
-
 patient:
   service:
     url: http://patient-service:4000
+
+auth:
+  service:
+    url: http://auth-service:4005
 
 spring:
   cloud:
     gateway:
       routes:
-        - id: auth-service-route
-          uri: http://auth-service:4005
+        - id: auth-service
+          uri: ${auth.service.url}
           predicates:
             - Path=/auth/**
           filters:
             - StripPrefix=1
 
-        ## REST CLIENT --> http://localhost:4000/api/patients
-        ## API GATEWAY --> http://patient-service:4000/patients
-        ## PATIENT SERVICE (Spring Boot App) -->/patients -->Patients Array
-        - id: patient-service-route
+        - id: patient-service
           uri: ${patient.service.url}
           predicates:
             - Path=/api/patients/**
           filters:
             - StripPrefix=1
 
-        ## REST-CLIENT --> http://loclahost:4000/api-docs/patients
-        ## API-GATEWAY --> http://patient-service:4000/v3/api-docs
-        - id: api-docs-patient-route
+        - id: api-docs
           uri: ${patient.service.url}
           predicates:
             - Path=/api-docs/patients
           filters:
             - RewritePath=/api-docs/patients,/v3/api-docs
-
-logging:
-  level:
-    org.springframework.cloud.gateway: TRACE
