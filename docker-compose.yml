@@ -32,8 +32,8 @@ services:
       - "4004:4004"
     depends_on:
       - patient-service
-#      - billing-service
-#      - analytics-service
+      - billing-service
+      - analytics-service
       - auth-service
     environment:
       SPRING_PROFILES_ACTIVE: docker

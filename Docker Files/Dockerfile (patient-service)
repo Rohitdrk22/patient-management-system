@@ -2,4 +2,6 @@ FROM openjdk:27-ea-jdk
 
 COPY ../patient-service/target/patient-service.jar patient-service.jar
 
+EXPOSE 4000
+
 ENTRYPOINT ["java", "-jar", "/patient-service.jar"]
