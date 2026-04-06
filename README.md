@@ -9,57 +9,62 @@ This project uses **Apache Kafka (KRaft mode - no Zookeeper)** for local event s
 * Java 17+
 * Windows (CMD / IntelliJ terminal with `cmd.exe`)
 * Apache Kafka 4.x
+* **Docker & Docker Compose (for Docker setup)** ⚠️
+
+👉 Make sure Docker is installed and running on your system before using Docker commands.
 
 ---
 
 ## 📁 Project Structure
 
-```id="k3g8cs"
+```id="2v8c8p"
 PMS/
- ├── kafka/                 # (You will create this)
- │    ├── config/           # server.properties, log4j2.yaml
+ ├── kafka/                 # (You will create this for local setup)
+ │    ├── config/
  │    ├── bin/
  │    └── ...
  ├── start-kafka.bat
+ ├── docker-compose.yml     # (for Docker setup)
  ├── .gitignore
  └── README.md
 ```
 
 ---
 
-## ⬇️ Setup Kafka (IMPORTANT)
+# 🧭 Choose How You Want to Run
 
-### 1. Create Kafka Folder
+---
 
-Inside your project root (`PMS`), create a folder:
+## 🖥️ Option 1: Run Locally (Manual Kafka Setup)
 
-```id="y7y2yd"
-kafka
+### ⬇️ Step 1: Create Kafka Folder
+
+```id="c6j1n3"
+mkdir kafka
 ```
 
 ---
 
-### 2. Download Kafka (Binary)
+### ⬇️ Step 2: Download Kafka (Binary)
 
 Go to:
 https://kafka.apache.org/downloads
 
-Download the **Binary version (NOT source code)**
+Download **Binary version (NOT source code)**
+
 Example:
 
-```
+```id="q3nq9o"
 kafka_2.13-4.x.x.tgz
 ```
 
 ---
 
-### 3. Extract Kafka
+### ⬇️ Step 3: Extract Kafka
 
-Extract the downloaded file **inside the `kafka` folder**
+Extract inside `kafka/` folder:
 
-Final structure should look like:
-
-```id="u0k7wt"
+```id="yk8m5o"
 PMS/
  ├── kafka/
  │    ├── bin/
@@ -70,25 +75,19 @@ PMS/
 
 ---
 
-## 🔧 Configuration Changes
+### 🔧 Step 4: Configuration Changes
 
-All configs are inside:
+📍 Location:
 
-```id="bx6apn"
+```id="t4md1m"
 kafka/config/
 ```
 
 ---
 
-### ✅ server.properties (KRaft mode)
+#### ✅ server.properties
 
-Update:
-
-```id="y6qxqv"
-kafka/config/server.properties
-```
-
-```properties id="s7gclj"
+```properties id="6gknr1"
 process.roles=broker,controller
 node.id=1
 controller.quorum.voters=1@localhost:9093
@@ -109,27 +108,9 @@ transaction.state.log.min.isr=1
 
 ---
 
-### ✅ log4j2.yaml
+#### ✅ log4j2.yaml
 
-Update:
-
-```id="m6spbx"
-kafka/config/log4j2.yaml
-```
-
-Change:
-
-```yaml id="5g8nyy"
-Appenders:
-  Console:
-    name: STDOUT
-    PatternLayout:
-      pattern: "${logPattern}"
-```
-
-To:
-
-```yaml id="2a2dkn"
+```yaml id="i0v8ra"
 Appenders:
   Console:
     name: STDOUT
@@ -139,20 +120,86 @@ Appenders:
 
 ---
 
-## ▶️ Running Kafka
+### ▶️ Step 5: Run Kafka
 
-From project root:
-
-```id="7u8s3g"
+```bash id="2t5k4g"
 .\start-kafka.bat
 ```
 
 ---
 
-## 🧪 Testing
+### 🧪 Testing
 
 * Producer window → send messages
 * Consumer window → receive messages
+
+---
+
+## 🐳 Option 2: Run with Docker (Recommended 🚀)
+
+### ▶️ Start Services
+
+```bash id="y1d8xk"
+docker-compose up --build
+```
+
+---
+
+### 🛑 Stop Services
+
+Press:
+
+```id="fuvg0c"
+Ctrl + C (twice if needed)
+```
+
+Then:
+
+```bash id="2t9d2k"
+docker-compose down
+```
+
+---
+
+### 🧹 Remove Everything (including data)
+
+```bash id="c93q7n"
+docker-compose down -v
+```
+
+---
+
+## ⚠️ Risks & Considerations
+
+### 🔴 Data Loss
+
+Running:
+
+```bash id="z4k2fi"
+docker-compose down -v
+```
+
+will **permanently delete all volume data** (Kafka logs, DB data, etc.)
+
+---
+
+### 🟡 Safe Cleanup
+
+```bash id="7n6j0x"
+docker-compose stop
+```
+
+Stops containers without deleting data.
+
+---
+
+### 🔵 Restart Services
+
+```bash id="3g3i9r"
+docker-compose up -d
+```
+
+⚠️ If `-v` was used earlier → data will be lost.
 
 ---
 
@@ -162,18 +209,19 @@ From project root:
 * Do NOT re-run format after first setup
 * If errors occur:
 
-    1. Stop Kafka
-    2. Delete `kafka/kafka-logs`
-    3. Restart
+  1. Stop Kafka
+  2. Delete `kafka/kafka-logs`
+  3. Restart
 
 ---
 
 ## 🚫 .gitignore
 
-```id="p0tw7c"
+```id="6e0g9r"
 kafka/
 **/kafka-logs/
 *.log
+*.tmp
 ```
 
 ---
