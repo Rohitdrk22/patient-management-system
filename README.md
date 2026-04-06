@@ -14,9 +14,9 @@ This project uses **Apache Kafka (KRaft mode - no Zookeeper)** for local event s
 
 ## 📁 Project Structure
 
-```
+```id="k3g8cs"
 PMS/
- ├── kafka/                 # (NOT included in repo)
+ ├── kafka/                 # (You will create this)
  │    ├── config/           # server.properties, log4j2.yaml
  │    ├── bin/
  │    └── ...
@@ -27,19 +27,45 @@ PMS/
 
 ---
 
-## ⬇️ Download Kafka (Binary)
+## ⬇️ Setup Kafka (IMPORTANT)
 
-1. Go to: https://kafka.apache.org/downloads
-2. Download the **Binary version (NOT source code)**
-   Example:
+### 1. Create Kafka Folder
 
-   ```
-   kafka_2.13-4.x.x.tgz
-   ```
-3. Extract it into project root:
+Inside your project root (`PMS`), create a folder:
+
+```id="y7y2yd"
+kafka
+```
+
+---
+
+### 2. Download Kafka (Binary)
+
+Go to:
+https://kafka.apache.org/downloads
+
+Download the **Binary version (NOT source code)**
+Example:
 
 ```
-PMS/kafka
+kafka_2.13-4.x.x.tgz
+```
+
+---
+
+### 3. Extract Kafka
+
+Extract the downloaded file **inside the `kafka` folder**
+
+Final structure should look like:
+
+```id="u0k7wt"
+PMS/
+ ├── kafka/
+ │    ├── bin/
+ │    ├── config/
+ │    ├── libs/
+ │    └── ...
 ```
 
 ---
@@ -48,7 +74,7 @@ PMS/kafka
 
 All configs are inside:
 
-```
+```id="bx6apn"
 kafka/config/
 ```
 
@@ -58,11 +84,11 @@ kafka/config/
 
 Update:
 
-```
+```id="y6qxqv"
 kafka/config/server.properties
 ```
 
-```properties
+```properties id="s7gclj"
 process.roles=broker,controller
 node.id=1
 controller.quorum.voters=1@localhost:9093
@@ -87,13 +113,13 @@ transaction.state.log.min.isr=1
 
 Update:
 
-```
+```id="m6spbx"
 kafka/config/log4j2.yaml
 ```
 
 Change:
 
-```yaml
+```yaml id="5g8nyy"
 Appenders:
   Console:
     name: STDOUT
@@ -103,7 +129,7 @@ Appenders:
 
 To:
 
-```yaml
+```yaml id="2a2dkn"
 Appenders:
   Console:
     name: STDOUT
@@ -117,7 +143,7 @@ Appenders:
 
 From project root:
 
-```
+```id="7u8s3g"
 .\start-kafka.bat
 ```
 
@@ -125,7 +151,7 @@ From project root:
 
 ## 🧪 Testing
 
-* Producer window → type messages
+* Producer window → send messages
 * Consumer window → receive messages
 
 ---
@@ -144,7 +170,7 @@ From project root:
 
 ## 🚫 .gitignore
 
-```
+```id="p0tw7c"
 kafka/
 **/kafka-logs/
 *.log
