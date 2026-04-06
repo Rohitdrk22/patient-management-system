@@ -1,6 +1,7 @@
 ### Post Request to add new patients.
 POST http://localhost:4000/patients
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "name": "Test Name",

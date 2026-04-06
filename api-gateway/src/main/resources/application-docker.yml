@@ -10,6 +10,7 @@ spring:
   cloud:
     gateway:
       routes:
+        # Route for /auth/** to auth-service
         - id: auth-service
           uri: ${auth.service.url}
           predicates:
@@ -17,13 +18,16 @@ spring:
           filters:
             - StripPrefix=1
 
+        # Route for /api/patients/** to patient-service
         - id: patient-service
           uri: ${patient.service.url}
           predicates:
             - Path=/api/patients/**
           filters:
             - StripPrefix=1
+            - JwtValidation
 
+        # Route for /api/docs/patients to patient-service /v3/api-docs
         - id: api-docs
           uri: ${patient.service.url}
           predicates:
