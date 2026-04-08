@@ -98,7 +98,9 @@ advertised.listeners=PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
 controller.listener.names=CONTROLLER
 listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
 
-log.dirs=./kafka/kafka-logs
+# ⚠️ IMPORTANT: Update this path based on your system
+log.dirs=<ABSOLUTE_PATH_TO_PROJECT>/kafka/kafka-logs 
+# ⚠️ for eg. my case: log.dirs=**D:/Practice/Java/PMS**/kafka/kafka-logs
 
 num.partitions=1
 offsets.topic.replication.factor=1
