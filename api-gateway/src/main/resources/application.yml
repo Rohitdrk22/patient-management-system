@@ -6,7 +6,7 @@ spring:
     name: api-gateway
 
   profiles:
-    default: local   # THIS is important
+    default: local
 
 logging:
   level:

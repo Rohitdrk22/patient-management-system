@@ -1,16 +1,25 @@
-patient:
-  service:
-    url: http://patient-service:4000
-
-auth:
-  service:
-    url: http://auth-service:4005
-
 spring:
   cloud:
     gateway:
+
+      # 🔥 CORS FIX (DOCKER + LOCAL)
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"   # Vite dev
+              - "http://127.0.0.1:5173"   # Alternate dev
+              - "http://localhost:3000"   # Frontend containe
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
       routes:
-        # Route for /auth/** to auth-service
         - id: auth-service
           uri: ${auth.service.url}
           predicates:
@@ -18,7 +27,6 @@ spring:
           filters:
             - StripPrefix=1
 
-        # Route for /api/patients/** to patient-service
         - id: patient-service
           uri: ${patient.service.url}
           predicates:
@@ -27,7 +35,6 @@ spring:
             - StripPrefix=1
             - JwtValidation
 
-        # Route for /api/docs/patients to patient-service /v3/api-docs
         - id: api-docs
           uri: ${patient.service.url}
           predicates:

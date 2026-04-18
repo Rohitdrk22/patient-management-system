@@ -1,0 +1,156 @@
+/* ===== GLOBAL ===== */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: #f1f5f9;
+}
+
+/* ===== LAYOUT ===== */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+}
+
+/* ===== TITLE ===== */
+.title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* ===== CARD ===== */
+.card {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  padding: 25px 30px;
+  border-radius: 16px;
+  margin-top: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  margin-bottom: 20px;
+  color: #1e293b;
+  text-align: center;
+}
+
+/* ===== FORM ===== */
+.card label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #334155;
+  font-weight: 500;
+}
+
+/* Inputs */
+.card input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.card input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+}
+
+/* ===== MESSAGE ===== */
+.no-data {
+  text-align: center;
+  margin-top: 15px;
+  color: #64748b;
+}
+
+/* ===== TABLE WRAPPER ===== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 15px;
+}
+
+/* ===== TABLE ===== */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* HEADER */
+.table thead {
+  background: #4f46e5;
+}
+
+
+.table th {
+  color: white;
+  text-align: center;
+  padding: 12px;
+  font-weight: 500;
+}
+
+/* ROWS */
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #334155;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ZEBRA */
+.table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+/* HOVER */
+.table tbody tr:hover {
+  background: #eef2ff;
+}
+
+/* FIX LONG ID */
+.table td:first-child {
+  font-size: 12px;
+  white-space: normal;     /* ✅ allow wrapping */
+  word-break: break-all;   /* ✅ break UUID properly */
+  max-width: 180px;
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .card {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}

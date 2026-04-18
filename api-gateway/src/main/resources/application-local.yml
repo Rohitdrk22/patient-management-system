@@ -6,11 +6,30 @@ auth:
   service:
     url: http://localhost:4005
 
+analytics:
+  service:
+    url: http://localhost:4006
+
 spring:
   cloud:
     gateway:
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://127.0.0.1:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
       routes:
-        # Route for /auth/** to auth-service
         - id: auth-service
           uri: ${auth.service.url}
           predicates:
@@ -18,7 +37,6 @@ spring:
           filters:
             - StripPrefix=1
 
-        # Route for /api/patients/** to patient-service
         - id: patient-service
           uri: ${patient.service.url}
           predicates:
@@ -27,7 +45,11 @@ spring:
             - StripPrefix=1
             - JwtValidation
 
-        # Route for /api/docs/patients to patient-service /v3/api-docs
+        - id: websocket-route
+          uri: ${analytics.service.url}
+          predicates:
+            - Path=/ws/**
+
         - id: api-docs
           uri: ${patient.service.url}
           predicates:
