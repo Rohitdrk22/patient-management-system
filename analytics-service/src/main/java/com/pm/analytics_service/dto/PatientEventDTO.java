@@ -4,9 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PatientEventDTO {
 
+    @JsonProperty
     private String patientId;
+
+    @JsonProperty
     private String name;
+
+    @JsonProperty
     private String email;
+
+    @JsonProperty
     private String eventType;
 
     public PatientEventDTO(String patientId, String name, String email, String eventType) {

@@ -8,7 +8,7 @@ auth:
 
 analytics:
   service:
-    url: http://localhost:4006
+    url: http://localhost:4002
 
 spring:
   cloud:
@@ -45,8 +45,13 @@ spring:
             - StripPrefix=1
             - JwtValidation
 
+#        - id: websocket-route
+#          uri: ${analytics.service.url}
+#          predicates:
+#            - Path=/ws/**
+
         - id: websocket-route
-          uri: ${analytics.service.url}
+          uri: ws://localhost:4002       # ✅ MUST be ws://
           predicates:
             - Path=/ws/**
 
