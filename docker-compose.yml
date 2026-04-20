@@ -1,24 +1,5 @@
 services:
-  frontend:
-    build:
-      context: .
-      dockerfile: "Docker Files/Dockerfile (FrontEnd-React)"
-      args:
-        VITE_API_BASE_URL: http://api-gateway:4004
-    container_name: pms-frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - api-gateway
-    environment:
-      VITE_API_BASE_URL: http://api-gateway:4004
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
+  ## Database
   postgres:
     image: postgres:15
     container_name: pms-patient-db-postgres
@@ -42,6 +23,28 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  ## FrontEnd-react
+  frontend:
+    build:
+      context: .
+      dockerfile: "Docker Files/Dockerfile (FrontEnd-React)"
+      args:
+        VITE_API_BASE_URL: http://api-gateway:4004
+    container_name: pms-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    environment:
+      VITE_API_BASE_URL: http://api-gateway:4004
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  ## API-Gateway
   api-gateway:
     build:
       context: .
@@ -66,6 +69,7 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  ## Auth-Service
   auth-service:
     build:
       context: .
@@ -83,6 +87,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: 1234
       JWT_SECRET: 6H3tW+1s2BkuJDkvdeU4L6EMIjwIuBaVeSH9EEguL5U=
 
+  ## Patient-Service
   patient-service:
     build:
       context: .
@@ -107,6 +112,7 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  ## Billing-Service
   billing-service:
     build:
       context: .
@@ -132,6 +138,7 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  ## Analytics-Service
   analytics-service:
     build:
       context: .
@@ -154,6 +161,7 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  ## Apache kafka
   kafka:
     build:
       context: .
@@ -169,6 +177,7 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  ## Kafka-UI port: 8080
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
@@ -180,5 +189,6 @@ services:
       KAFKA_CLUSTERS_0_NAME: pms-patient-db-cluster
       KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka:9092
 
+# Volume to store database consistency
 volumes:
   postgres_data:
