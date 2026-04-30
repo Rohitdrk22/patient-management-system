@@ -1,150 +1,120 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "./components/Navbar";
-import AddPatient from "./components/AddPatient";
-import ShowPatients from "./components/ShowPatients";
-import DeletePatient from "./components/DeletePatient";
 import Login from "./components/Login";
-import api from "./api/axios";
-import "./components/Patients.css";
-
+import ShowPatients from "./components/ShowPatients";
 import useKafkaEvents from "./hooks/useKafkaEvents";
-import { ToastContainer } from "react-toastify";
+import api from "./api/axios";
+
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import Dashboard from "./components/Dashboard";
+import ActivityFeed from "./components/ActivityFeed";
+
+import "./components/Patients.css";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("token")
   );
 
-  const [page, setPage] = useState("home");
+  const [page, setPage] = useState("dashboard");
 
-  // 📊 Dashboard states
   const [stats, setStats] = useState({
     total: 0,
     today: 0,
   });
 
+  const [events, setEvents] = useState([]);
   const [lastEvent, setLastEvent] = useState(
     localStorage.getItem("lastEvent") || ""
   );
 
-  // 🔥 WebSocket listener (REAL-TIME updates)
-  useKafkaEvents(setLastEvent, setStats);
+  // 🔥 REAL-TIME EVENTS
+  useKafkaEvents((event) => {
+    setLastEvent(event);
 
-  // 📊 Initial fetch (BASE DATA)
+    // store last 10 events
+    setEvents((prev) => [event, ...prev.slice(0, 9)]);
+
+    // 🔔 notification
+    toast.info(event);
+  }, setStats);
+
+  // 📊 Initial data load
   useEffect(() => {
-    if (isAuthenticated) {
-      api
-        .get("/api/patients")
-        .then((res) => {
-          const patients = res.data || [];
+    if (!isAuthenticated) return;
 
-          const today = new Date().toISOString().split("T")[0];
+    api.get("/api/patients").then((res) => {
+      const patients = res.data || [];
+      const today = new Date().toISOString().split("T")[0];
 
-          const todayCount = patients.filter((p) => {
-            if (!p.registeredDate) return false;
+      const todayCount = patients.filter(
+        (p) =>
+          p.registeredDate &&
+          new Date(p.registeredDate).toISOString().split("T")[0] === today
+      ).length;
 
-            return (
-              new Date(p.registeredDate)
-                .toISOString()
-                .split("T")[0] === today
-            );
-          }).length;
-
-          setStats({
-            total: patients.length,
-            today: todayCount,
-          });
-        })
-        .catch((err) => {
-          console.error("Error fetching stats", err);
-        });
-    }
+      setStats({
+        total: patients.length,
+        today: todayCount,
+      });
+    });
   }, [isAuthenticated]);
 
-  const handleLoginSuccess = () => {
-    setIsAuthenticated(true);
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    setPage("home");
+    localStorage.clear();
     setIsAuthenticated(false);
   };
 
-  const renderPage = () => {
-    if (!isAuthenticated) {
-      return <Login key="login" onLoginSuccess={handleLoginSuccess} />;
-    }
-
-    switch (page) {
-      case "show":
-        return <ShowPatients />;
-
-      case "add":
-        return <AddPatient />;
-
-      case "delete":
-        return <DeletePatient />;
-
-      default:
-        return (
-          <div className="dashboard">
-            <h2>🏥 Patient Management Dashboard</h2>
-
-            {/* 📊 Stats Cards */}
-            <div className="cards">
-              <div className="card stat">
-                <h3>Total Patients</h3>
-                <p>{stats.total}</p>
-              </div>
-
-              <div className="card stat">
-                <h3>New Today</h3>
-                <p>{stats.today}</p>
-              </div>
-
-              <div className="card stat">
-                <h3>Last Activity</h3>
-                <p>{lastEvent || "No activity yet"}</p>
-              </div>
-            </div>
-
-            {/* ⚡ Quick Actions */}
-            <div className="actions">
-              <button onClick={() => setPage("add")}>
-                ➕ Add Patient
-              </button>
-
-              <button onClick={() => setPage("show")}>
-                📋 View Patients
-              </button>
-
-              <button onClick={() => setPage("delete")}>
-                ❌ Delete Patient
-              </button>
-            </div>
-          </div>
-        );
-    }
-  };
+  if (!isAuthenticated) {
+    return (
+      <div className="login-page">
+        <Login onLoginSuccess={() => setIsAuthenticated(true)} />
+      </div>
+    );
+  }
 
   return (
-    <div>
-      {/* 🔥 Toast */}
-      <ToastContainer position="top-right" autoClose={3000} />
+    <div className="app">
+      <ToastContainer position="top-right" />
 
-      {/* Navbar */}
-      {isAuthenticated && (
-        <Navbar
-          setPage={setPage}
-          page={page}
-          onLogout={handleLogout}
-        />
-      )}
+      {/* SIDEBAR */}
+      <div className="sidebar">
+        <h2>🏥 HMS</h2>
 
-      {/* Page Content */}
-      <div className="container">{renderPage()}</div>
+        <button
+          className={page === "dashboard" ? "active" : ""}
+          onClick={() => setPage("dashboard")}
+        >
+          Dashboard
+        </button>
+
+        <button
+          className={page === "patients" ? "active" : ""}
+          onClick={() => setPage("patients")}
+        >
+          Patients
+        </button>
+      </div>
+
+      {/* MAIN */}
+      <div className="main">
+        <div className="topbar">
+          <span>Hospital Management System</span>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+
+        <div className="dashboard">
+          {page === "dashboard" && (
+            <>
+              <Dashboard stats={stats} />
+              <ActivityFeed events={events} />
+            </>
+          )}
+
+          {page === "patients" && <ShowPatients />}
+        </div>
+      </div>
     </div>
   );
 }

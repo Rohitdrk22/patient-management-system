@@ -24,6 +24,12 @@ public class PatientRequestDTO {
     @NotBlank(groups = CreatePatientValidationGroup.class, message = "Registered date is required")
     private String registeredDate;
 
+    @NotBlank(groups = CreatePatientValidationGroup.class, message = "Condition is required")
+    private String condition;
+
+    @NotBlank(groups = CreatePatientValidationGroup.class, message = "Status is required")
+    private String status;
+
 
     // Getter && Setters
     public @NotBlank(message = "Name is required") @Size(max = 100, message = "Name cannot exceed 100 characters") String getName() {
@@ -64,5 +70,21 @@ public class PatientRequestDTO {
 
     public void setRegisteredDate(String registeredDate) {
         this.registeredDate = registeredDate;
+    }
+
+    public @NotBlank(groups = CreatePatientValidationGroup.class, message = "Condition is required") String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(@NotBlank(groups = CreatePatientValidationGroup.class, message = "Condition is required") String condition) {
+        this.condition = condition;
+    }
+
+    public @NotBlank(groups = CreatePatientValidationGroup.class, message = "Status is required") String getStatus() {
+        return status;
+    }
+
+    public void setStatus(@NotBlank(groups = CreatePatientValidationGroup.class, message = "Status is required") String status) {
+        this.status = status;
     }
 }

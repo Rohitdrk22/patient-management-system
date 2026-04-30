@@ -1,25 +1,22 @@
 import React, { useState } from "react";
 import api from "../api/axios";
-import "./Patients.css";
+import { toast } from "react-toastify";
 
-const AddPatient = () => {
+const AddPatient = ({ onSuccess, onClose }) => {
+  const getTodayDate = () =>
+    new Date().toISOString().split("T")[0];
 
-  // ✅ helper to get today's date in YYYY-MM-DD
-  const getTodayDate = () => {
-    return new Date().toISOString().split("T")[0];
-  };
-
-  // ✅ state with auto-filled registeredDate
   const [form, setForm] = useState({
     name: "",
     email: "",
     address: "",
     dateOfBirth: "",
+    condition: "",
+    status: "ADMITTED",
     registeredDate: getTodayDate()
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -28,30 +25,23 @@ const AddPatient = () => {
   const addPatient = async () => {
     try {
       setLoading(true);
-      setMessage("");
 
       await api.post("/api/patients", form);
 
-      setMessage("✅ Patient added successfully");
+      // ✅ SUCCESS TOAST
+      toast.success("Patient added successfully ✅");
 
-      // ✅ reset form but keep today's date
-      setForm({
-        name: "",
-        email: "",
-        address: "",
-        dateOfBirth: "",
-        registeredDate: getTodayDate()
-      });
+      onSuccess();   // refresh list
+      onClose();     // close modal
 
     } catch (err) {
-  console.error("FULL ERROR:", err.response?.data);
-  setMessage("❌ " + JSON.stringify(err.response?.data));
+      console.error(err);
 
-
+      // ✅ ERROR TOAST
       if (err.response) {
-        setMessage("❌ " + (err.response.data.message || "Error adding patient"));
+        toast.error(err.response.data?.message || "Failed to add patient ❌");
       } else {
-        setMessage("❌ Server not reachable");
+        toast.error("Server not reachable ❌");
       }
 
     } finally {
@@ -60,63 +50,49 @@ const AddPatient = () => {
   };
 
   return (
-    <div className="card">
-      <h3>Add Patient</h3>
-
-      {message && <p className="no-data">{message}</p>}
-
-      {/* Name */}
-      <label>Name</label>
-      <input
-        name="name"
-        placeholder="Enter name"
-        value={form.name}
-        onChange={handleChange}
-      />
-
-      {/* Email */}
-      <label>Email</label>
-      <input
-        name="email"
-        placeholder="Enter email"
-        value={form.email}
-        onChange={handleChange}
-      />
-
-      {/* Address */}
-      <label>Address</label>
-      <input
-        name="address"
-        placeholder="Enter address"
-        value={form.address}
-        onChange={handleChange}
-      />
-
-      {/* DOB */}
-      <label>Date of Birth</label>
-      <input
-        name="dateOfBirth"
-        type="date"
-        value={form.dateOfBirth}
-        onChange={handleChange}
-      />
-
-      {/* Registered Date (auto-filled) */}
-      <label>Registered Date</label>
-      <input
-        name="registeredDate"
-        type="date"
-        value={form.registeredDate}
-        onChange={handleChange} // you can remove this if you want it locked
-      />
-
-      <button
-        className="btn success"
-        onClick={addPatient}
-        disabled={loading}
+    <div className="modal-overlay" onClick={onClose}>
+      <div
+        className="modal-card"
+        onClick={(e) => e.stopPropagation()}
       >
-        {loading ? "Adding..." : "Add Patient"}
-      </button>
+        {/* Header */}
+        <div className="modal-header">
+          <h3>Add Patient</h3>
+          <span className="close-btn" onClick={onClose}>✖</span>
+        </div>
+
+        {/* Body */}
+        <div className="modal-body">
+          <input name="name" placeholder="Name" onChange={handleChange} />
+          <input name="email" placeholder="Email" onChange={handleChange} />
+          <input name="address" placeholder="Address" onChange={handleChange} />
+
+          <input type="date" name="dateOfBirth" onChange={handleChange} />
+
+          <input
+            name="condition"
+            placeholder="Condition (e.g. Fever)"
+            onChange={handleChange}
+          />
+
+          <select name="status" onChange={handleChange}>
+            <option value="ADMITTED">Admitted</option>
+            <option value="DISCHARGED">Discharged</option>
+            <option value="CRITICAL">Critical</option>
+          </select>
+        </div>
+
+        {/* Footer */}
+        <div className="modal-footer">
+          <button className="secondary" onClick={onClose}>
+            Cancel
+          </button>
+
+          <button className="primary" onClick={addPatient} disabled={loading}>
+            {loading ? "Saving..." : "Save Patient"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

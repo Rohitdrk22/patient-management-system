@@ -2,79 +2,111 @@ import { useEffect } from "react";
 import { Client } from "@stomp/stompjs";
 import { toast } from "react-toastify";
 
-const useKafkaEvents = (setLastEvent, setStats) => {
+const useKafkaEvents = (setLastEvent, setStats, onNewEvent) => {
   useEffect(() => {
     const client = new Client({
       brokerURL: "ws://localhost:4004/ws",
       reconnectDelay: 5000,
+      debug: (str) => console.log("STOMP:", str),
 
       onConnect: () => {
         console.log("✅ Connected to WebSocket");
 
-        client.subscribe("/topic/patient-events", (message) => {
-          const data = JSON.parse(message.body);
+        const subscription = client.subscribe(
+          "/topic/patient-events",
+          (message) => {
+            if (!message.body) return;
 
-          console.log("🔥 Event received:", data);
+            try {
+              const data = JSON.parse(message.body);
 
-          const value =
-            data.eventType === "PATIENT_CREATED"
-              ? `Added ${data.name}`
-              : `Deleted ${data.name}`;
+              console.log("🔥 Event received:", data);
 
-          // ✅ Last Activity
-          if (setLastEvent) {
-            setLastEvent(value);
-            localStorage.setItem("lastEvent", value);
-          }
-
-          // ✅ REAL-TIME STATS UPDATE
-          if (setStats) {
-            setStats((prev) => {
-              let newTotal = prev.total;
-              let newToday = prev.today;
-
-              if (data.eventType === "PATIENT_CREATED") {
-                newTotal += 1;
-                newToday += 1;
-              } else if (data.eventType === "PATIENT_DELETED") {
-                newTotal -= 1;
+              // ✅ 🔥 SEND EVENT TO UI (IMPORTANT)
+              if (onNewEvent) {
+                onNewEvent(data);
               }
 
-              return {
-                total: newTotal,
-                today: newToday,
-              };
-            });
-          }
+              const value =
+                data.eventType === "PATIENT_CREATED"
+                  ? `Added ${data.name}`
+                  : `Deleted ${data.name}`;
 
-          // ✅ Toasts
-          if (data.eventType === "PATIENT_CREATED") {
-            toast.success(
-            <div>
-              <strong>Patient Created ✅</strong>
-              <div>👤 {data.name}</div>
-              <div>📧 {data.email}</div>
-              <div>🆔 {data.patientId}</div>
-            </div>,
-            { toastId: data.patientId + "-created" }
-          );
-          } else if (data.eventType === "PATIENT_DELETED") {
-            toast.error(
-          <div>
-            <strong>Patient Deleted ❌</strong>
-            <div>👤 {data.name}</div>
-            <div>🆔 {data.patientId}</div>
-          </div>,
-        { toastId: data.patientId + "-deleted" }
-      );
+              // ✅ Last Activity
+              if (setLastEvent) {
+                setLastEvent(value);
+                localStorage.setItem("lastEvent", value);
+              }
+
+              // ✅ Stats update
+              if (setStats) {
+                setStats((prev) => {
+                  let newTotal = prev.total;
+                  let newToday = prev.today;
+
+                  if (data.eventType === "PATIENT_CREATED") {
+                    newTotal += 1;
+                    newToday += 1;
+                  } else if (data.eventType === "PATIENT_DELETED") {
+                    newTotal -= 1;
+                  }
+
+                  return {
+                    total: newTotal,
+                    today: newToday,
+                  };
+                });
+              }
+
+              // ✅ Toasts
+              if (data.eventType === "PATIENT_CREATED") {
+                toast.success(
+                  <div>
+                    <strong>Patient Created ✅</strong>
+                    <div>👤 {data.name}</div>
+                    <div>📧 {data.email}</div>
+                    <div>🆔 {data.patientId}</div>
+                  </div>,
+                  { toastId: data.patientId + "-created" }
+                );
+              } else if (data.eventType === "PATIENT_DELETED") {
+                toast.error(
+                  <div>
+                    <strong>Patient Deleted ❌</strong>
+                    <div>👤 {data.name}</div>
+                    <div>🆔 {data.patientId}</div>
+                  </div>,
+                  { toastId: data.patientId + "-deleted" }
+                );
+              }
+            } catch (err) {
+              console.error("❌ Invalid message format", err);
+            }
           }
-        });
+        );
+
+        client.onDisconnect = () => {
+          console.log("🔌 Disconnected");
+          subscription.unsubscribe();
+        };
+      },
+
+      onStompError: (frame) => {
+        console.error("❌ Broker error:", frame.headers["message"]);
+      },
+
+      onWebSocketError: (error) => {
+        console.error("❌ WebSocket error:", error);
       },
     });
 
     client.activate();
-    return () => client.deactivate();
-  }, [setLastEvent, setStats]);
+
+    return () => {
+      console.log("🛑 Cleaning up WebSocket");
+      client.deactivate();
+    };
+  }, [setLastEvent, setStats, onNewEvent]);
 };
 
 export default useKafkaEvents;

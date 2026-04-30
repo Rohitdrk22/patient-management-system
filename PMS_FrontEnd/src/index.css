@@ -1,111 +1,336 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #e5e7eb;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --text: #4a5568;
+  --text-strong: #111827;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #d97706;
+
+  --radius: 8px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+
+  font-family: "Segoe UI", Roboto, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  background: var(--bg);
+  color: var(--text);
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
+/* =========================
+   APP LAYOUT
+========================= */
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+/* =========================
+   LOGIN PAGE
+========================= */
+.login-page {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #2b6cb0, #4c51bf);
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.card {
+  background: var(--panel);
+  padding: 24px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 400px; /* FIX: prevents stretching */
+}
+
+.title {
   text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  margin-bottom: 16px;
+  color: var(--text-strong);
+}
+
+/* =========================
+   FORM ELEMENTS
+========================= */
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
+}
+
+/* Password field */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 40px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--primary);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+button,
+.btn {
+  border: none;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+button.primary,
+.btn {
+  background: var(--primary);
+  color: white;
+}
+
+button.primary:hover,
+.btn:hover {
+  background: var(--primary-hover);
+}
+
+button.secondary {
+  background: white;
+  border: 1px solid var(--border);
+}
+
+.topbar button {
+  background: var(--danger);
+  color: white;
+  padding: 6px 12px;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+.sidebar {
+  width: 220px;
+  background: #111827;
+  color: white;
+  padding: 16px;
+}
+
+.sidebar h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.sidebar button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.sidebar button:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.sidebar button.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* =========================
+   MAIN CONTENT
+========================= */
+.main {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* =========================
+   TOPBAR
+========================= */
+.topbar {
+  background: var(--panel);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+/* =========================
+   DASHBOARD
+========================= */
+.dashboard {
+  padding: 20px;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+/* Stats cards */
+.stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.stat-card {
+  background: var(--panel);
+  padding: 16px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  flex: 1;
+}
+
+.stat-card h4 {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.stat-card p {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+/* =========================
+   ACTION BAR
+========================= */
+.actions {
+  margin: 10px 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap; /* FIX: responsive */
+}
+
+/* =========================
+   TABLE
+========================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--panel);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: 14px;
+}
+
+.table th {
+  background: #f9fafb;
+  font-weight: 600;
+}
+
+.table tbody tr:hover {
+  background: #f3f4f6;
+}
+
+/* =========================
+   BADGES
+========================= */
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge.admitted {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.discharged {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.badge.critical {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* =========================
+   DELETE ICON
+========================= */
+.delete-icon {
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.2s;
+}
+
+.delete-icon:hover {
+  transform: scale(1.2);
+  color: var(--danger);
+}
+
+/* =========================
+   UTILITIES
+========================= */
+.no-data {
+  color: var(--danger);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.activity-item {
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.live-activity {
+  color: red;
+  font-weight: bold;
 }

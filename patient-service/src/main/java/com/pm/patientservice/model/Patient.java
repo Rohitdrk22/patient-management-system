@@ -31,52 +31,43 @@ public class Patient {
     @NotNull
     private LocalDate registeredDate;
 
-    //Getters & Setter
-    public UUID getId() {
-        return id;
+    // NEW FIELD
+    private String condition;
+
+    // EST PRACTICE → ENUM
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    // ENUM
+    public enum Status {
+        ADMITTED,
+        DISCHARGED,
+        CRITICAL
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    // Getters & Setters
 
-    public @NotNull String getName() {
-        return name;
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    public void setName(@NotNull String name) {
-        this.name = name;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public @NotNull @Email String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setEmail(@NotNull @Email String email) {
-        this.email = email;
-    }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
-    public @NotNull String getAddress() {
-        return address;
-    }
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
-    public void setAddress(@NotNull String address) {
-        this.address = address;
-    }
+    public LocalDate getRegisteredDate() { return registeredDate; }
+    public void setRegisteredDate(LocalDate registeredDate) { this.registeredDate = registeredDate; }
 
-    public @NotNull LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
+    public String getCondition() { return condition; }
+    public void setCondition(String condition) { this.condition = condition; }
 
-    public void setDateOfBirth(@NotNull LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public @NotNull LocalDate getRegisteredDate() {
-        return registeredDate;
-    }
-
-    public void setRegisteredDate(@NotNull LocalDate registeredDate) {
-        this.registeredDate = registeredDate;
-    }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
 }

@@ -7,26 +7,64 @@ import com.pm.patientservice.model.Patient;
 import java.time.LocalDate;
 
 public class PatientMapper {
-    public static PatientResponseDTO toDTO(Patient patient){
-        PatientResponseDTO patientDTO = new PatientResponseDTO();
 
-        patientDTO.setId(patient.getId().toString());
-        patientDTO.setName(patient.getName());
-        patientDTO.setEmail(patient.getEmail());
-        patientDTO.setAddress(patient.getAddress());
-        patientDTO.setDateOfBirth(patient.getDateOfBirth().toString());
+    // ✅ MODEL → DTO
+    public static PatientResponseDTO toDTO(Patient patient) {
+        PatientResponseDTO dto = new PatientResponseDTO();
 
-        return patientDTO;
+        dto.setId(patient.getId().toString());
+        dto.setName(patient.getName());
+        dto.setEmail(patient.getEmail());
+        dto.setAddress(patient.getAddress());
+
+        dto.setDateOfBirth(
+                patient.getDateOfBirth() != null
+                        ? patient.getDateOfBirth().toString()
+                        : null
+        );
+
+        // ✅ IMPORTANT FIX (your bug was here)
+        dto.setRegisteredDate(
+                patient.getRegisteredDate() != null
+                        ? patient.getRegisteredDate().toString()
+                        : null
+        );
+
+        // ✅ NEW FIELDS
+        dto.setCondition(patient.getCondition());
+
+        dto.setStatus(
+                patient.getStatus() != null
+                        ? patient.getStatus().name()
+                        : null
+        );
+
+        return dto;
     }
 
-    public static Patient toModel(PatientRequestDTO patientRequestDTO){
+    // ✅ DTO → MODEL
+    public static Patient toModel(PatientRequestDTO dto) {
         Patient patient = new Patient();
 
-        patient.setName(patientRequestDTO.getName());
-        patient.setEmail(patientRequestDTO.getEmail());
-        patient.setAddress(patientRequestDTO.getAddress());
-        patient.setDateOfBirth(LocalDate.parse((patientRequestDTO.getDateOfBirth())));
-        patient.setRegisteredDate(LocalDate.parse((patientRequestDTO.getRegisteredDate())));
+        patient.setName(dto.getName());
+        patient.setEmail(dto.getEmail());
+        patient.setAddress(dto.getAddress());
+
+        // ✅ SAFE DATE PARSE
+        if (dto.getDateOfBirth() != null) {
+            patient.setDateOfBirth(LocalDate.parse(dto.getDateOfBirth()));
+        }
+
+        if (dto.getRegisteredDate() != null) {
+            patient.setRegisteredDate(LocalDate.parse(dto.getRegisteredDate()));
+        }
+
+        // ✅ NEW FIELDS
+        patient.setCondition(dto.getCondition());
+
+        if (dto.getStatus() != null) {
+            patient.setStatus(Patient.Status.valueOf(dto.getStatus()));
+        }
 
         return patient;
     }

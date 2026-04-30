@@ -67,7 +67,7 @@ const Login = ({ onLoginSuccess }) => {
           Please login to continue
         </p>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} className="password-wrapper">
           <label>Email</label>
           <input
             type="email"
@@ -81,32 +81,17 @@ const Login = ({ onLoginSuccess }) => {
           <label>Password</label>
 
           {/* 👁️ Password toggle */}
-          <div style={{ position: "relative" }}>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Enter password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              style={{ paddingRight: "40px" }}
-            />
-
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                fontSize: "14px",
-                color: "#6366f1"
-              }}
-            >
-              {showPassword ? "🙈" : "👁️"}
-            </span>
-          </div>
+         <div className="password-wrapper">
+          <input type={showPassword ? "text" : "password"} 
+                 name="password" 
+                 placeholder="Enter password" 
+                 value={form.password} 
+          onChange={handleChange} required
+          />
+          <span className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? "🙈" : "👁️"}
+          </span>
+        </div>
 
           <button
             className="btn"

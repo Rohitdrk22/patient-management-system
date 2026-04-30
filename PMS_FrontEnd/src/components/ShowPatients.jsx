@@ -1,82 +1,173 @@
-import React, { useState } from "react";
-// import axios from "axios";
+import React, { useEffect, useState } from "react";
 import api from "../api/axios";
-import "./Patients.css";
+import AddPatient from "./AddPatient";
 
-const ShowPatients = () => {
+function ShowPatients() {
   const [patients, setPatients] = useState([]);
-  const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("ALL");
+  const [showModal, setShowModal] = useState(false);
 
-  const togglePatients = async () => {
-  try {
-    setError("");
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
-    if (!show) {
-      setLoading(true);
-      const res = await api.get("/api/patients"); // ✅ interceptor used
+  const fetchPatients = () => {
+    api.get("/api/patients").then((res) => {
       setPatients(res.data || []);
-    }
+    });
+  };
 
-    setShow((prev) => !prev);
-  } catch (err) {
-    console.error(err);
-    setError("❌ Failed to fetch patients");
-  } finally {
-    setLoading(false);
-  }
-};
+  useEffect(() => {
+    fetchPatients();
+  }, []);
+
+  const filtered = patients
+    .filter((p) =>
+      p.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter((p) =>
+      filter === "ALL" ? true : p.status === filter
+    );
+
+  const handleDelete = async () => {
+    try {
+      setDeleting(true);
+      await api.delete(`/api/patients/${deleteId}`);
+      setDeleteId(null);
+      fetchPatients();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setDeleting(false);
+    }
+  };
+  
 
   return (
-    <div className="container">
-      <h2 className="title">Patient Management</h2>
+    <>
+      {/* 🔍 Search + Filter */}
+      <div className="actions">
+        <input
+          placeholder="Search patient..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-      <button className="btn show-btn" onClick={togglePatients}>
-        {show ? "Hide Patients" : "Show All Patients"}
-      </button>
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="ALL">All</option>
+          <option value="ADMITTED">Admitted</option>
+          <option value="DISCHARGED">Discharged</option>
+          <option value="CRITICAL">Critical</option>
+        </select>
 
-      {show && (
-        <div className="card">
-          <h3>Patient Records</h3>
+        <button
+          className="primary"
+          onClick={() => setShowModal(true)}
+        >
+          + Add Patient
+        </button>
+      </div>
 
-          {loading ? (
-            <p className="no-data">Loading...</p>
-          ) : error ? (
-            <p className="no-data">{error}</p>
-          ) : patients.length === 0 ? (
-            <p className="no-data">No patients found</p>
-          ) : (
-            <div className="table-wrapper"> {/* ✅ IMPORTANT FIX */}
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>DOB</th>
-                  </tr>
-                </thead>
+      {/* 📋 Table */}
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Condition</th>
+            <th>Status</th>
+            <th>Registered</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
 
-                <tbody>
-                  {patients.map((p) => (
-                    <tr key={p.id}>
-                      <td title={p.id}>{p.id}</td> {/* hover full ID */}
-                      <td>{p.name}</td>
-                      <td>{p.email}</td>
-                      <td>{p.address}</td>
-                      <td>{p.dateOfBirth}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        <tbody>
+  {filtered.length === 0 ? (
+    <tr>
+      <td colSpan="5">No patients found</td>
+    </tr>
+  ) : (
+    filtered.map((p) => (
+      <tr key={p.id}>
+        <td>{p.name}</td>
+
+        <td>{p.condition || "N/A"}</td>
+
+        <td>
+          <span className={`badge ${p.status?.toLowerCase()}`}>
+            {p.status || "N/A"}
+          </span>
+        </td>
+
+        {/* ✅ FIXED DATE */}
+        <td>
+          {p.registeredDate
+            ? (() => {
+                const [y, m, d] = p.registeredDate.split("-");
+                return `${d}-${m}-${y}`;
+              })()
+            : "N/A"}
+        </td>
+
+        {/* 🗑️ Delete */}
+        <td>
+          <span
+            className="delete-icon"
+            onClick={() => setDeleteId(p.id)}
+          >
+            🗑️
+          </span>
+        </td>
+      </tr>
+    ))
+  )}
+</tbody>
+      </table>
+
+      {/* ➕ Add Patient Modal */}
+      {showModal && (
+        <AddPatient
+          onSuccess={() => {
+            fetchPatients();
+            setShowModal(false);
+          }}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+
+      {/* ❌ Delete Confirmation Modal */}
+      {deleteId && (
+        <div className="modal-overlay">
+          <div className="confirm-card">
+            <h3>Delete Patient</h3>
+
+            <p>
+              Are you sure you want to delete this patient?
+            </p>
+
+            <div className="modal-footer">
+              <button
+                className="secondary"
+                onClick={() => setDeleteId(null)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="danger"
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? "Deleting..." : "Delete"}
+              </button>
             </div>
-          )}
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
-};
+}
 
 export default ShowPatients;
