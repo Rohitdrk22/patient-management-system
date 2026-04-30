@@ -105,15 +105,12 @@ function App() {
         </div>
 
         <div className="dashboard">
-          {page === "dashboard" && (
-            <>
-              <Dashboard stats={stats} />
-              <ActivityFeed events={events} />
-            </>
-          )}
+  {page === "dashboard" && (
+    <Dashboard stats={stats} events={events} />
+  )}
 
-          {page === "patients" && <ShowPatients />}
-        </div>
+  {page === "patients" && <ShowPatients />}
+</div>
       </div>
     </div>
   );
