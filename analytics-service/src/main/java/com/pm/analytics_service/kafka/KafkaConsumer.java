@@ -26,7 +26,9 @@ public class KafkaConsumer {
                     patientEvent.getPatientId(),
                     patientEvent.getName(),
                     patientEvent.getEmail(),
-                    patientEvent.getEventType()
+                    patientEvent.getEventType(),
+                    patientEvent.getStatus()
+
             );
 
             System.out.println("===== DECODED EVENT =====");

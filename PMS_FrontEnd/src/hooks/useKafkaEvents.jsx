@@ -19,66 +19,105 @@ const useKafkaEvents = (setLastEvent, setStats, onNewEvent) => {
 
             try {
               const data = JSON.parse(message.body);
-
               console.log("🔥 Event received:", data);
 
-              // ✅ 🔥 SEND EVENT TO UI (IMPORTANT)
+              // =========================
+              // ✅ SEND EVENT TO UI
+              // =========================
               if (onNewEvent) {
                 onNewEvent(data);
               }
 
-              const value =
-                data.eventType === "PATIENT_CREATED"
-                  ? `Added ${data.name}`
-                  : `Deleted ${data.name}`;
+              // =========================
+              // ✅ ACTIVITY TEXT
+              // =========================
+              let value = "";
 
-              // ✅ Last Activity
+              if (data.eventType === "PATIENT_CREATED") {
+                value = `Added ${data.name}`;
+              } else if (data.eventType === "PATIENT_DELETED") {
+                value = `Deleted ${data.name}`;
+              } else if (data.eventType === "PATIENT_UPDATED") {
+                value = `Updated ${data.name}`;
+              }
+
+              // =========================
+              // ✅ LAST EVENT
+              // =========================
               if (setLastEvent) {
                 setLastEvent(value);
                 localStorage.setItem("lastEvent", value);
               }
 
-              // ✅ Stats update
+              // =========================
+              // ✅ STATS UPDATE (FIXED)
+              // =========================
               if (setStats) {
                 setStats((prev) => {
                   let newTotal = prev.total;
                   let newToday = prev.today;
+                  let newDischarged = prev.discharged || 0;
+                  let newCritical = prev.critical || 0;
 
                   if (data.eventType === "PATIENT_CREATED") {
                     newTotal += 1;
                     newToday += 1;
-                  } else if (data.eventType === "PATIENT_DELETED") {
+                  } 
+                  else if (data.eventType === "PATIENT_DELETED") {
                     newTotal -= 1;
+                  } 
+                  else if (data.eventType === "PATIENT_UPDATED") {
+                    // 🔥 depends on backend sending status
+                    if (data.status === "DISCHARGED") {
+                      newDischarged += 1;
+                    }
+                    if (data.status === "CRITICAL") {
+                      newCritical += 1;
+                    }
                   }
 
                   return {
                     total: newTotal,
                     today: newToday,
+                    discharged: newDischarged,
+                    critical: newCritical,
                   };
                 });
               }
 
-              // ✅ Toasts
+              // =========================
+              // ✅ TOASTS (FIXED)
+              // =========================
               if (data.eventType === "PATIENT_CREATED") {
                 toast.success(
                   <div>
                     <strong>Patient Created ✅</strong>
                     <div>👤 {data.name}</div>
                     <div>📧 {data.email}</div>
-                    <div>🆔 {data.patientId}</div>
                   </div>,
                   { toastId: data.patientId + "-created" }
                 );
+
+              } else if (data.eventType === "PATIENT_UPDATED") {
+                toast.info(
+                  <div>
+                    <strong>Status Updated 🔄</strong>
+                    <div>👤 {data.name}</div>
+                    <div>📌 {data.status}</div>
+                  </div>,
+                  { toastId: data.patientId + "-updated" }
+                );
+
               } else if (data.eventType === "PATIENT_DELETED") {
                 toast.error(
                   <div>
                     <strong>Patient Deleted ❌</strong>
                     <div>👤 {data.name}</div>
-                    <div>🆔 {data.patientId}</div>
                   </div>,
                   { toastId: data.patientId + "-deleted" }
                 );
               }
+
             } catch (err) {
               console.error("❌ Invalid message format", err);
             }

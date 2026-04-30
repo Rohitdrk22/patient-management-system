@@ -106,6 +106,26 @@ public class PatientService {
         return PatientMapper.toDTO(updatedPatient);
     }
 
+    public PatientResponseDTO updateStatus(UUID id, String status) {
+
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() ->
+                        new PatientNotFoundException("Patient not found with ID: " + id)
+                );
+
+        // 🔥 convert String → Enum
+        Patient.Status statusEnum = Patient.Status.valueOf(status.toUpperCase());
+
+        patient.setStatus(statusEnum);
+
+        Patient updatedPatient = patientRepository.save(patient);
+
+        // 🔥 Kafka EVENT (important for realtime)
+        kafkaProducer.sendEvent(updatedPatient, EventType.PATIENT_UPDATED);
+
+        return PatientMapper.toDTO(updatedPatient);
+    }
+
     // ✅ DELETE PATIENT (🔥 FIXED WITH KAFKA)
     @Operation(
             summary = "Delete patient",

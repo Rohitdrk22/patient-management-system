@@ -11,6 +11,10 @@ function ShowPatients() {
   const [deleteId, setDeleteId] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
+  // 🔥 editing state
+  const [editingId, setEditingId] = useState(null);
+
+  // 📥 FETCH
   const fetchPatients = () => {
     api.get("/api/patients").then((res) => {
       setPatients(res.data || []);
@@ -21,6 +25,7 @@ function ShowPatients() {
     fetchPatients();
   }, []);
 
+  // 🔍 FILTER
   const filtered = patients
     .filter((p) =>
       p.name.toLowerCase().includes(search.toLowerCase())
@@ -29,6 +34,7 @@ function ShowPatients() {
       filter === "ALL" ? true : p.status === filter
     );
 
+  // 🗑️ DELETE
   const handleDelete = async () => {
     try {
       setDeleting(true);
@@ -41,7 +47,26 @@ function ShowPatients() {
       setDeleting(false);
     }
   };
-  
+
+  // ✅ 🔥 FIXED STATUS UPDATE (PATCH API)
+  const handleStatusChange = async (patient, newStatus) => {
+    try {
+      await api.patch(
+        `/api/patients/${patient.id}/status?status=${newStatus}`
+      );
+
+      // 🔥 instant UI update
+      setPatients((prev) =>
+        prev.map((p) =>
+          p.id === patient.id ? { ...p, status: newStatus } : p
+        )
+      );
+
+      setEditingId(null);
+    } catch (err) {
+      console.error("Status update failed", err);
+    }
+  };
 
   return (
     <>
@@ -71,7 +96,7 @@ function ShowPatients() {
         </button>
       </div>
 
-      {/* 📋 Table */}
+      {/* 📋 TABLE */}
       <table className="table">
         <thead>
           <tr>
@@ -84,49 +109,74 @@ function ShowPatients() {
         </thead>
 
         <tbody>
-  {filtered.length === 0 ? (
-    <tr>
-      <td colSpan="5">No patients found</td>
-    </tr>
-  ) : (
-    filtered.map((p) => (
-      <tr key={p.id}>
-        <td>{p.name}</td>
+          {filtered.length === 0 ? (
+            <tr>
+              <td colSpan="5">No patients found</td>
+            </tr>
+          ) : (
+            filtered.map((p) => (
+              <tr key={p.id}>
+                <td>{p.name}</td>
 
-        <td>{p.condition || "N/A"}</td>
+                <td>{p.condition || "N/A"}</td>
 
-        <td>
-          <span className={`badge ${p.status?.toLowerCase()}`}>
-            {p.status || "N/A"}
-          </span>
-        </td>
+                {/* 🔥 STATUS EDIT */}
+                <td>
+                  {editingId === p.id ? (
+                    <select
+                      value={p.status}
+                      autoFocus
+                      onBlur={() => setEditingId(null)}
+                      onChange={(e) =>
+                        handleStatusChange(p, e.target.value)
+                      }
+                    >
+                      <option value="ADMITTED">Admitted</option>
+                      <option value="DISCHARGED">Discharged</option>
+                      <option value="CRITICAL">Critical</option>
+                    </select>
+                  ) : (
+                    <>
+                      <span className={`badge ${p.status?.toLowerCase()}`}>
+                        {p.status}
+                      </span>
 
-        {/* ✅ FIXED DATE */}
-        <td>
-          {p.registeredDate
-            ? (() => {
-                const [y, m, d] = p.registeredDate.split("-");
-                return `${d}-${m}-${y}`;
-              })()
-            : "N/A"}
-        </td>
+                      <span
+                        className="edit-icon"
+                        onClick={() => setEditingId(p.id)}
+                      >
+                        ✏️
+                      </span>
+                    </>
+                  )}
+                </td>
 
-        {/* 🗑️ Delete */}
-        <td>
-          <span
-            className="delete-icon"
-            onClick={() => setDeleteId(p.id)}
-          >
-            🗑️
-          </span>
-        </td>
-      </tr>
-    ))
-  )}
-</tbody>
+                {/* 📅 DATE */}
+                <td>
+                  {p.registeredDate
+                    ? (() => {
+                        const [y, m, d] = p.registeredDate.split("-");
+                        return `${d}-${m}-${y}`;
+                      })()
+                    : "N/A"}
+                </td>
+
+                {/* 🗑️ DELETE */}
+                <td>
+                  <span
+                    className="delete-icon"
+                    onClick={() => setDeleteId(p.id)}
+                  >
+                    🗑️
+                  </span>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
       </table>
 
-      {/* ➕ Add Patient Modal */}
+      {/* ➕ ADD MODAL */}
       {showModal && (
         <AddPatient
           onSuccess={() => {
@@ -137,15 +187,13 @@ function ShowPatients() {
         />
       )}
 
-      {/* ❌ Delete Confirmation Modal */}
+      {/* ❌ DELETE CONFIRM */}
       {deleteId && (
         <div className="modal-overlay">
           <div className="confirm-card">
             <h3>Delete Patient</h3>
 
-            <p>
-              Are you sure you want to delete this patient?
-            </p>
+            <p>Are you sure you want to delete this patient?</p>
 
             <div className="modal-footer">
               <button

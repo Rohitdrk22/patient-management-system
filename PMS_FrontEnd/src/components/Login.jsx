@@ -81,14 +81,14 @@ const Login = ({ onLoginSuccess }) => {
           <label>Password</label>
 
           {/* 👁️ Password toggle */}
-         <div className="password-wrapper">
+         <div className="input-wrapper">
           <input type={showPassword ? "text" : "password"} 
                  name="password" 
                  placeholder="Enter password" 
                  value={form.password} 
           onChange={handleChange} required
           />
-          <span className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+          <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
             {showPassword ? "🙈" : "👁️"}
           </span>
         </div>

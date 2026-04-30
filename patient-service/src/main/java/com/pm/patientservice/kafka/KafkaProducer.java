@@ -25,7 +25,8 @@ public class KafkaProducer {
                 .setPatientId(patient.getId().toString())
                 .setName(patient.getName())
                 .setEmail(patient.getEmail())
-                .setEventType(eventType.name()) // 🔥 enum → string
+                .setEventType(eventType.name()) // enum → string
+                .setStatus(patient.getStatus() != null ? patient.getStatus().name() : "UNKNOWN" )
                 .build();
 
         log.info("📤 Sending {} event to Kafka: {}", eventType, event);

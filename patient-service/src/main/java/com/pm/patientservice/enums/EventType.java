@@ -2,5 +2,5 @@ package com.pm.patientservice.enums;
 
 public enum EventType {
     PATIENT_CREATED,
-    PATIENT_DELETED
+    PATIENT_UPDATED, PATIENT_DELETED
 }

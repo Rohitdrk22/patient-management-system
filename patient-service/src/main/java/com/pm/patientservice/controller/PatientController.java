@@ -53,6 +53,17 @@ public class PatientController {
         return ResponseEntity.ok().body(patientResponseDTO);
     }
 
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Update only patient status")
+    public ResponseEntity<PatientResponseDTO> updateStatus(
+            @PathVariable UUID id,
+            @RequestParam String status
+    ) {
+        PatientResponseDTO response = patientService.updateStatus(id, status);
+        System.out.println("🔥 STATUS API CALLED: " + id + " -> " + status);
+        return ResponseEntity.ok(response);
+    }
+
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Controller for deleting the user by user ID")

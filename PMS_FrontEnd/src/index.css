@@ -262,3 +262,32 @@ button.primary {
   color: gray;
 }
 
+.edit-icon {
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* 🔥 space for icon */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.toggle-password:hover {
+  color: #111827;
+}
